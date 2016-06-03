@@ -1,26 +1,29 @@
 #include "application.h"
 
+// ANSI C
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> // sleep
 
+// custom headers
+#include "event.h"
 #include "eventlistener.h"
 
 typedef struct n
 {
-    int ID;
+    Event* ev;  // evvent reference
     struct n* next;
 } node;
 
 
-void Application::push(int taskId)
+void Application::push(Event* pEv)
 {
 
     node* pn = (node*)malloc(sizeof(node));
     if(!pn) {
         return;
     }
-    pn->ID = taskId;
+    pn->ev = pEv;
     pn->next = p_head;
     p_head = pn;
 }
@@ -58,11 +61,13 @@ int Application::exec()
     while (1) {
         // listen for events
         // process latest event
+
         while (p_head) {
-            printf("[%d]\n", p_head->ID);
+
             node* pdel = p_head;
             p_head = p_head->next;
             if(pdel) {
+                pdel->ev->printMessage();
                 free(pdel);
             }
         }
@@ -72,6 +77,11 @@ int Application::exec()
     return 0;
 }
 
+
+//! exec as daemon, also need to handle the kill signals
+//! \brief Application::execd
+//! \return
+//!
 int Application::execd()
 {
     switch(fork()) {

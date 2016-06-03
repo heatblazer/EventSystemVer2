@@ -1,7 +1,12 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+// opaqua ptrs
 typedef struct n node;
+
+
+// PIMPL
+class Event;
 class EventListener;
 
 class Application
@@ -18,12 +23,12 @@ public:
 
 private:
     Application();
-    void push(int taskId);
+    void push(Event* pEv);
 
     int argc;
     char** argv;
-    EventListener *p_evListener;
 
+    EventListener *p_evListener;
     friend class EventListener;
 };
 
