@@ -1,7 +1,8 @@
 #include "application.h"
 
-#include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> // sleep
 
 #include "eventlistener.h"
 
@@ -14,7 +15,11 @@ typedef struct n
 
 void Application::push(int taskId)
 {
-    node* pn = new node;
+
+    node* pn = (node*)malloc(sizeof(node));
+    if(!pn) {
+        return;
+    }
     pn->ID = taskId;
     pn->next = p_head;
     p_head = pn;
@@ -33,8 +38,7 @@ Application::~Application()
         node* pdel = p_head;
         p_head = p_head->next;
         if (pdel) {
-            printf("[%d]\n", pdel->ID);
-            delete pdel;
+            free(pdel);
         }
     }
 }
@@ -55,13 +59,42 @@ int Application::exec()
         // listen for events
         // process latest event
         while (p_head) {
-            std::cout << p_head->ID << std::endl;
+            printf("[%d]\n", p_head->ID);
             node* pdel = p_head;
             p_head = p_head->next;
-            delete pdel;
+            if(pdel) {
+                free(pdel);
+            }
         }
         // remove processed event
     }
 
     return 0;
+}
+
+int Application::execd()
+{
+    switch(fork()) {
+    case 0:
+        break;
+    case 1:
+        exit(0);
+    default:
+        exit(0);
+    }
+
+    // when we get here we start to listen for registered events
+    static int i =0;
+    while (1) {
+        // listen for events
+        // process latest event
+        FILE* fp = fopen("log", "a");
+        if(!fp) {
+            continue;
+        }
+        fprintf(fp, "logging...[%d] times\n", i++);
+        usleep(10000);
+        fclose(fp);
+        // remove processed event
+    }
 }

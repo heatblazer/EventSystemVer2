@@ -9,10 +9,12 @@ class Application
 
 private:
     node* p_head;
+
 public:
     Application(int a, char** pa);
     virtual ~Application();
     virtual int exec(void);
+    virtual int execd(void);
 
 private:
     Application();
