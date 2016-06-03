@@ -5,11 +5,13 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     application.cpp \
-    eventlistener.cpp
+    eventlistener.cpp \
+    event.cpp
 
 HEADERS += \
     application.h \
-    eventlistener.h
+    eventlistener.h \
+    event.h
 
 
 LIBS += -lpthread
