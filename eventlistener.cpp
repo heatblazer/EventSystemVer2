@@ -1,27 +1,25 @@
 #include "eventlistener.h"
 
 #include "application.h"
+#include "event.h"
 
+// ANSI C
 #include <stdio.h>
+#include <string.h>
 
 void* EventListener::run(void *pdata)
 {
     EventListener *e = (EventListener*) pdata;
-    static int i =0;
+    static char msg[256] = {0};
+
     while (1) {
         // listen for input
- //       char c = getchar();
- //       getchar();
-        if ( (i % 0xffff == 0) ) {
-            i = 0;
+        fgets(msg, sizeof(msg)/sizeof(char), stdin);
+        if (strlen(msg) > 0) {
+            msg[strlen(msg)-1] = 0; // cut the newline
+            e->p_application->push(new Event(msg));
         }
-        i++;
-        pthread_mutex_lock(&e->m_mutex);
-        e->p_application->push(i);
-        pthread_mutex_unlock(&e->m_mutex);
-
         usleep(100); // needs a time to breathe
-
     }
 }
 
