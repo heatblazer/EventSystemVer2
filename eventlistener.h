@@ -23,6 +23,8 @@ private:
 
     pthread_t m_thread;
     pthread_mutex_t m_mutex;
+
+
 };
 
 #endif // EVENTLISTENER_H
